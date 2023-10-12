@@ -1,36 +1,33 @@
 import express from "express";
-import {userSignUp} from '../Controller/userController.js'
-// import {createProduct, productList,getproductById} from '../controllers/productController.js'
-// import {createCategory, getCategoryList} from "../controllers/categoryController.js"
-// import {createCart, getCart,updateCart,deleteCart} from '../controllers/cartController.js'
-// import {isAuthenticated, authorization} from '../middleware/auth.js'
-// import {createOrder,orderHistory,ordersbyId} from '../controllers/orderController.js'
+import {userSignUp,userSignIn} from '../Controller/userController.js'
+import {createCommunity,getAll} from '../Controller/communityController.js'
+import {createRole} from '../Controller/roleController.js'
+import {createMembers} from '../Controller/memberController.js'
+
 const router = express.Router()
 
 // ============================================== USER ROUTES ==================================================
 
 router.post("/v1/auth/signup" , userSignUp)
-// router.post("/Login" , userLogin)
+router.post("/v1/auth/signin" , userSignIn)
 
 
-// ============================================= CATEGORY ROUTES ===============================================
+// ============================================= COMUUNITY ROUTES ===============================================
 
-// router.post("/createCategory" , createCategory)
-// router.get("/getlistBycategoryId" , getCategoryList)
+router.post("/v1/community" , createCommunity)
+router.get("/v1/community" , getAll)
+router.get("/v1/community/:id/members" , getAll)
 
-// ============================================== PRODUCT ROUTES ==============================================
 
-// router.post("/product" , createProduct)
-// router.get("/getproductsList/categoryId/:categoryId" , productList)
-// router.get("/getproduct/productId/:productId" , getproductById)
+// ============================================== ROLE ROUTES ==============================================
+
+router.post("/v1/role" , createRole)
 
 
 // ========================================== CART ROUTES ======================================================
 
-// router.post("/api/cart/add/:userId",isAuthenticated,authorization,createCart)
-// router.get("/api/cart/:userId",isAuthenticated,authorization,getCart)
-// router.put("/api/cart/update/:userId",isAuthenticated,authorization,updateCart)
-// router.delete("/api/cart/deleteCart/:userId",isAuthenticated,authorization,deleteCart)
+router.post("/v1/member" , createMembers)
+
 
 
 // ============================================== ORDER ROUTES =================================================
