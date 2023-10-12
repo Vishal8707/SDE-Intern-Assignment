@@ -59,12 +59,26 @@ export const createCommunity = async function (req, res) {
 
 export const getAll = async function (req, res) {
   try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
     let findAll = await communityModel.find();
+
+    const total = await communityModel.countDocuments();
+    const pages = Math.ceil(total / limit);
+    
     if (!findAll)
       return res
         .status(404)
         .send({ status: false, message: "There are not any communities." });
-    return res.status(201).send({ status: true, data: findAll });
+    return res.status(201).send({ status: true,
+      content: {
+        meta: {
+          total,
+          pages,
+          page,
+        },
+      }, data: findAll });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }

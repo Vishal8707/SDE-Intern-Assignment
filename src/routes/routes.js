@@ -2,7 +2,7 @@ import express from "express";
 import {userSignUp,userSignIn} from '../Controller/userController.js'
 import {createCommunity,getAll,getMemberByid} from '../Controller/communityController.js'
 import {createRole,getallRole} from '../Controller/roleController.js'
-import {createMembers} from '../Controller/memberController.js'
+import {createMembers,deleteMember} from '../Controller/memberController.js'
 
 const router = express.Router()
 
@@ -28,6 +28,7 @@ router.get("/v1/role" , getallRole)
 // ========================================== CART ROUTES ======================================================
 
 router.post("/v1/member" , createMembers)
+router.post("/v1/member/:id" , deleteMember)
 
 
 
