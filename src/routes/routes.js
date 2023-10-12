@@ -1,7 +1,7 @@
 import express from "express";
 import {userSignUp,userSignIn} from '../Controller/userController.js'
-import {createCommunity,getAll} from '../Controller/communityController.js'
-import {createRole} from '../Controller/roleController.js'
+import {createCommunity,getAll,getMemberByid} from '../Controller/communityController.js'
+import {createRole,getallRole} from '../Controller/roleController.js'
 import {createMembers} from '../Controller/memberController.js'
 
 const router = express.Router()
@@ -16,12 +16,13 @@ router.post("/v1/auth/signin" , userSignIn)
 
 router.post("/v1/community" , createCommunity)
 router.get("/v1/community" , getAll)
-router.get("/v1/community/:id/members" , getAll)
+router.get("/v1/community/:id/members" , getMemberByid)
 
 
 // ============================================== ROLE ROUTES ==============================================
 
 router.post("/v1/role" , createRole)
+router.get("/v1/role" , getallRole)
 
 
 // ========================================== CART ROUTES ======================================================

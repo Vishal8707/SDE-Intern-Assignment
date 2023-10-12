@@ -38,3 +38,36 @@ export const createRole = async function (req, res) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
+
+export const getallRole = async function (req, res) {
+  try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const findAll = await roleModel.find().skip(skip).limit(limit);
+    const total = await roleModel.countDocuments();
+    const pages = Math.ceil(total / limit);
+
+    if (!findAll) {
+      return res
+        .status(404)
+        .send({ status: false, message: "There are not any role." });
+    }
+
+    return res.status(201).send({
+      status: true,
+      content: {
+        meta: {
+          total,
+          pages,
+          page,
+        },
+        data: findAll,
+      },
+    });
+  } catch (err) {
+    return res.status(500).send({ status: false, message: err.message });
+  }
+};

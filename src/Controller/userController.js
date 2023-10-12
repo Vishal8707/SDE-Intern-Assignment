@@ -12,23 +12,23 @@ export const userSignUp = async function (req, res) {
   try {
     const data = req.body;
     data.password = data.password.trim();
-    const { fullName, email, password } = data;
+    const { name, email, password } = data;
 
     if (Object.keys(data).length == 0)
       return res
         .status(400)
         .send({ status: false, message: " request body can't be empty" });
 
-    if (!fullName)
+    if (!name)
       return res.status(400).send({
         status: false,
-        message: "Please provide your fullName, or it can't be empty.",
+        message: "Please provide your name, or it can't be empty.",
       });
 
-    if (!validateName(fullName))
+    if (!validateName(name))
       return res
         .status(400)
-        .send({ status: false, message: "Please provide valid  fullName" });
+        .send({ status: false, message: "Please provide valid  name" });
 
     if (!email)
       return res
