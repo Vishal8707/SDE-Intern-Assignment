@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
 import userModel from '../Models/userModel.js'
 
-// ----------------------------------------------------isAuthenticated---------------------------------------------------
-
+// Middleware for checking if a user is authenticated
 export const isAuthenticated = async function (req, res, next) {
   try {
-    // Check if the token is present
+    // Check if the token is present in the request headers
     let token = req.headers["x-api-key"];
 
     if (!token) {
@@ -15,17 +14,19 @@ export const isAuthenticated = async function (req, res, next) {
     }
 
     try {
-    // Verify the token
-    let decodedToken = jwt.verify(token, "very-very-secret-key");
-    if (!decodedToken) {
-      return res.status(400).send({
-        status: false,
-        msg: "Invalid token. Please enter a valid token.",
-      });
-    }
-    req.decodedToken = decodedToken;
-    next();
+      // Verify the token with a secret key (change this key to a secure value)
+      let decodedToken = jwt.verify(token, "very-very-secret-key");
 
+      if (!decodedToken) {
+        return res.status(400).send({
+          status: false,
+          msg: "Invalid token. Please enter a valid token.",
+        });
+      }
+
+      // Attach the decoded token to the request for future use
+      req.decodedToken = decodedToken;
+      next();
     } catch (error) {
       if (error.name === "JsonWebTokenError") {
         return res.status(400).send({
@@ -39,28 +40,37 @@ export const isAuthenticated = async function (req, res, next) {
       }
     }
   } catch (err) {
+    console.log("Authentication error", err.message);
     res.status(500).send({ status: false, msg: err.message });
   }
 };
 
-// ----------------------------------------------------authorization---------------------------------------------------
-
-export const authorization = async function (req, res, next) {
+// Middleware for checking authorization based on user ID
+export const isAuthorized = async function (req, res, next) {
   try {
+    // Get the user ID of the logged-in user from the decoded token
     let userLoggedIn = req.decodedToken.userId;
-    let userId = req.params.userId;
+    
+    // Get the user ID from the request body
+    let userId = req.body.user;
    
+    // Check if the user with the specified ID exists
     let checkUserId = await userModel.findById(userId);
 
     if (!checkUserId)
-      return res.status(400).send({ status: false, message: "User not Found" });
+      return res.status(400).send({ status: false, message: "User not found." });
+
+    // Check if the logged-in user's ID matches the requested user's ID
     if (checkUserId._id != userLoggedIn)
       return res.status(403).send({
         status: false,
-        msg: "Login users are not allowed to modify changes.",
+        msg: "Login users are not allowed to make changes for other users.",
       });
+
+    // If all checks pass, proceed with the request
     next();
   } catch (err) {
-    return res.status(500).send({ status: false, msg: err.messge });
+    console.log("Authorization error", err.message);
+    return res.status(500).send({ status: false, msg: err.message });
   }
 };

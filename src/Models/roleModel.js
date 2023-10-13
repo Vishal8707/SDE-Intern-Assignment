@@ -1,16 +1,20 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+// Define the role schema
+const roleSchema = new mongoose.Schema(
   {
+    // Role name
     name: {
       type: String,
-      required: true,
-      unique:true,
-      lowercase: true,
-      trim: true,
+      required: true, // Field is required
+      unique: true, // Role names should be unique
+      lowercase: true, // Store the role name in lowercase
+      trim: true, // Remove leading and trailing spaces
     },
   },
+  // Add timestamps for created and updated fields
   { timestamps: true }
 );
 
-export default  mongoose.model("role", userSchema);
+// Create a Mongoose model named "role" using the roleSchema
+export default mongoose.model("role", roleSchema);
